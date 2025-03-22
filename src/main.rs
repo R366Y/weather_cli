@@ -1,6 +1,7 @@
 mod api;
 mod models;
 mod display;
+mod ascii_art;
 
 use clap::{Parser, ValueEnum};
 use std::fmt;

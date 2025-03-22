@@ -1,11 +1,29 @@
 use crate::models::{weather_code_to_description, WeatherResponse};
+use crate::ascii_art::get_weather_art;
 use colored::*;
 
 pub fn display_weather(weather: &WeatherResponse, unit_symbol: &str) {
     println!("\n{}", "Current Weather".bold().underline());
 
     // Weather conditions based on weather code
-    let description = weather_code_to_description(weather.current.weather_code);
+    let weather_code = weather.current.weather_code;
+    let ascii_art = get_weather_art(weather_code);
+    let description = weather_code_to_description(weather_code);
+
+    // Print ASCII art for current weather
+    let colored_art = match weather_code {
+        0 => ascii_art.yellow(),                  // Clear sky - yellow
+        1..=3 => ascii_art.white(),               // Partly cloudy - white
+        45 | 48 => ascii_art.white().dimmed(),    // Fog - dimmed white
+        51..=67 => ascii_art.blue(),              // Drizzle and rain - blue
+        71..=77 => ascii_art.white().bold(),      // Snow - bold white
+        80..=82 => ascii_art.bright_blue(),       // Rain showers - bright blue
+        85..=86 => ascii_art.bright_white(),      // Snow showers - bright white
+        95..=99 => ascii_art.bright_yellow(),     // Thunderstorm - bright yellow
+        _ => ascii_art.normal()                   // Unknown - normal color
+    };
+
+    println!("{}", colored_art);
     println!("Conditions: {}", description.to_string().cyan());
 
     // Temperature information
